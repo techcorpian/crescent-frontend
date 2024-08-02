@@ -27,9 +27,10 @@ jobs:
     - name: Deploy to Hostinger
       uses: addnab/docker-run-action@v3
       with:
-        image: ubuntu:lftp
-        options: --entrypoint lftp
+        image: ubuntu:20.04
+        options: --entrypoint "/bin/sh"
         run: |
+          apt-get update && apt-get install -y lftp
           lftp -e "set ftp:ssl-allow no; mirror -R dist /public_html; quit" -u ${{ secrets.HOSTINGER_FTP_USERNAME }},${{ secrets.HOSTINGER_FTP_PASSWORD }} ${{ secrets.HOSTINGER_FTP_SERVER }}
       env:
         HOSTINGER_FTP_SERVER: ${{ secrets.HOSTINGER_FTP_SERVER }}
