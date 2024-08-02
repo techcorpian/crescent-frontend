@@ -7,7 +7,7 @@ const About = () => {
               <img src="" alt="" className="rounded-[50%] bg-red-400 md:w-[30rem] md:h-[30rem] w-[15rem] h-[15rem] " />
           </div>
           <div className="text-center md:text-right">
-              <header className='mb-6 text-6xl font-extrabold'>ABOUT US</header>
+              <header className='mb-6 text-6xl font-extrabold'>ABOUT </header>
               <div className="text-lg">
                   "To create a thriving educational hub that empowers every student to reach their full potential, fosters a culture of lifelong learning, and serves as a catalyst for positive change in our rural community. In our school, we aim to help every child become their best selves, learn continuously, and make our community even better."
               </div>
