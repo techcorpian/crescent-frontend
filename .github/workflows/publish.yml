@@ -1,29 +1,34 @@
-name: Generate a build and push to another branch
+name: Deploy to Hostinger
 
 on:
   push:
     branches:
-      - master # The branch name your are commit the new changes
+      - master
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
-    name: Build and Push
+
     steps:
-      - name: git-checkout
-        uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Install all dependencies
-        run: npm install
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
 
-      - name: Build
-        run: npm run build # The build command of your project
+    - name: Install dependencies
+      run: npm install
 
-      - name: Push
-        uses: s0/git-publish-subdir-action@develop
-        env:
-          REPO: self
-          BRANCH: build # The branch name where you want to push the assets
-          FOLDER: build # The directory where your assets are generated
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # GitHub will automatically add this - you don't need to bother getting a token
-          MESSAGE: "Build: ({sha}) {msg}" # The commit message
+    - name: Build project
+      run: npm run build
+
+    - name: Deploy to Hostinger
+      env:
+        HOSTINGER_FTP_SERVER: ${{ secrets.HOSTINGER_FTP_SERVER }}
+        HOSTINGER_FTP_USERNAME: ${{ secrets.HOSTINGER_FTP_USERNAME }}
+        HOSTINGER_FTP_PASSWORD: ${{ secrets.HOSTINGER_FTP_PASSWORD }}
+      run: |
+        apt-get update && apt-get install -y lftp
+        lftp -e "set ftp:ssl-allow no; mirror -R dist /public_html; quit" -u $HOSTINGER_FTP_USERNAME,$HOSTINGER_FTP_PASSWORD $HOSTINGER_FTP_SERVER
